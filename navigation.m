@@ -29,21 +29,18 @@ for i = 1:samples
 	prev_i = ifelse(i > 1, i - 1, samples + 1);
 
 	% gravity bias -> trough calibration!
+	% uncomment the line if using fake data (thus skipping calibration step)
 	%acceleration(i, 3) += 9.81;
 
 	velocity(i, :)     = acceleration(i, :) .* sampling + velocity(prev_i, :);
 	space(i, :)        = 0.5 .* acceleration(i, :) .* (sampling ^ 2) + velocity(prev_i, :) + space(prev_i, :);
-	
-	%space(i, :)    =   get_rotation(0.5 .* acceleration(i, :) .* (sampling ^ 2), phi(i), theta(i), psi(i))
-	%				 + get_rotation(velocity(prev_i, :)  .* sampling		   , phi(i), theta(i), psi(i))
-	%				 + get_rotation(space(prev_i, :), phi(i), theta(i), psi(i));
 end
 
 % remove last null row
 space    = space(1:end-1,:);
 velocity = velocity(1:end-1,:);
 
-% plot path
+% plot 3D path
 figure(1);
 scatter3(space(:,1), space(:,2), space(:,3), 1, "red")
 xlabel("X")
